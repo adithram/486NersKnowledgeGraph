@@ -119,8 +119,6 @@ def convertToTokens(sentence):
 features_vec = [convertToFeatures(sentence) for sentence in all_sentences]
 labels = [convertToLabels(sentence) for sentence in all_sentences]
 
-print (features_vec[0])
-print (labels[0])
 
 # instantiate CRF object
 # L1 regularization parameter increased to improve focus on context
@@ -152,17 +150,26 @@ print ("Data has been fit to features")
 # Predicting Named Entities from raw text
 
 # Read raw text
+unprocessed_text = ''
+with open("rawtext.txt", "r") as raw:
+    unprocessed_text = raw.read()
 
-# Split raw text into sentences
+# split raw text into list of sentences
+raw_sentences = []
+tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+raw_sentences = tokenizer.tokenize(unprocessed_text)
 
-# Process sentences and tag each word in sentence with part of speech (POS) tag
-# Use nltk tagger
+# list of tagged sentences
+tagged_sentences = []
+for sentence in raw_sentences:
+    text = nltk.word_tokenize(sentence)
+    tagged = nltk.pos_tag(text)
+    tagged_sentences.append(tagged)
 
-# Predict usin built CRF model. Prediction will give NERS tag
+raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
+preds = crf.predict(raw_text_features)
 
-# All NERS tagged objects tagged with anything other than "O" for Other is considered a named entity
 
-# Return list of named entities from raw text
 
 
 
