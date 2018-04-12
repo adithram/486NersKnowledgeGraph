@@ -11,7 +11,7 @@ import sklearn
 from sklearn_crfsuite import CRF
 from sklearn.cross_validation import cross_val_predict
 from sklearn_crfsuite.metrics import flat_classification_report
-from eli5 import show_weights
+import eli5
 
 # loading dataset
 training_data= pd.read_csv("data/ner_dataset.csv", encoding="latin1")
@@ -133,7 +133,7 @@ print(cv_report)
 crf.fit(features_vec, labels)
 
 # Look at the weights
-show_weights(crf, top=30)
+eli5.show_weights(crf, top=30)
 
 
 

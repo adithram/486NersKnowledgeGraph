@@ -23,3 +23,4 @@
 - Pandas
 - Sklearn
 - Sklearn-CRF
+- eli5
