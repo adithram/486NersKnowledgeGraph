@@ -1,7 +1,7 @@
 # 486NersKnowledgeGraph
 
 ### Dataset used to train NERS Model:
-- [https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus]
+- [Entity Annotated Corpus](https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus)
 - Corpus features a tagged portiong from the Groningen Meaning Bank tagged specifically for training a model for named entity extraction.
 
 ### Types of Named Entities:
