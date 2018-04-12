@@ -13,6 +13,9 @@ from sklearn.cross_validation import cross_val_predict
 from sklearn_crfsuite.metrics import flat_classification_report
 import eli5
 
+############################################################################################################
+# Building Model for Named Entity Recognition
+
 # loading dataset
 training_data= pd.read_csv("data/ner_dataset.csv", encoding="latin1")
 training_data = training_data.fillna(method="ffill")
@@ -115,6 +118,9 @@ def convertToTokens(sentence):
 features_vec = [convertToFeatures(sentence) for sentence in all_sentences]
 labels = [convertToLabels(sentence) for sentence in all_sentences]
 
+print (features_vec[0])
+print (labels[0])
+
 # instantiate CRF object
 # L1 regularization parameter increased to improve focus on context
 crf = CRF(algorithm='lbfgs',
@@ -123,19 +129,39 @@ crf = CRF(algorithm='lbfgs',
           max_iterations=100,
           all_possible_transitions=False)
 
+print ("Model Built.")
+
 # Make prediction on data with 5-folds cross validation
 predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
+print ("5 Folds Cross Validation Complete")
 
 # 5-folds cross validation report
 cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
 print(cv_report)
 
 crf.fit(features_vec, labels)
+print ("Data has been fit to features")
 
 # Look at the weights
-eli5.show_weights(crf, top=30)
+# eli5.show_weights(crf, top=30)
 
 
+
+############################################################################################################
+# Predicting Named Entities from raw text
+
+# Read raw text
+
+# Split raw text into sentences
+
+# Process sentences and tag each word in sentence with part of speech (POS) tag
+# Use nltk tagger
+
+# Predict usin built CRF model. Prediction will give NERS tag
+
+# All NERS tagged objects tagged with anything other than "O" for Other is considered a named entity
+
+# Return list of named entities from raw text
 
 
 
