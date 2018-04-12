@@ -2,8 +2,8 @@
 
 ### Dataset used to train NERS Model:
 - Corpus features a tagged portiong from the Groningen Meaning Bank tagged specifically for training a model for named entity extraction.
-- [Entity Annotated Corpus](https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus)\
-- [Groningen Meaning bank] (http://gmb.let.rug.nl/data.php)
+- [Entity Annotated Corpus](https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus)
+- [Groningen Meaning bank](http://gmb.let.rug.nl/data.php)
 
 ### Types of Named Entities:
 1) geo = Geographical Entity
