@@ -50,11 +50,9 @@ class RetrieveSentence(object):
 
 
 retrieval = RetrieveSentence(training_data)
-sentence = retrieval.get_next()
+# sentence = retrieval.get_next()
 
 # sentence contrains a list of tuples, each tuple is the word, pos, and tag
-print (sentence)
-
 
 # retrieve all of the sentences as tuple
 all_sentences = retrieval.all_sentences
@@ -130,19 +128,19 @@ crf = CRF(algorithm='lbfgs',
 
 print ("Model Built.")
 
-# Make prediction on data with 5-folds cross validation
-# predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
-# print ("5 Folds Cross Validation Complete")
+Make prediction on data with 5-folds cross validation
+predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
+print ("5 Folds Cross Validation Complete")
 
-# # 5-folds cross validation report
-# cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
-# print(cv_report)
+# 5-folds cross validation report
+cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
+print(cv_report)
 
 crf.fit(features_vec, labels)
 print ("Data has been fit to features")
 
-# Look at the weights
-# eli5.show_weights(crf, top=30)
+Look at the weights
+eli5.show_weights(crf, top=30)
 
 
 
