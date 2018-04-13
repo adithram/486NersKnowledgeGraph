@@ -25,3 +25,5 @@
 - Sklearn-CRF
 - eli5
 - nltk
+- json
+- urllib
