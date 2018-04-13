@@ -31,15 +31,25 @@ for query in queries:
 	response = json.loads(urllib.urlopen(url).read())
 	related_items.append(response)
 
+
 output = ''
+extra_seeds = []
 for i, response in enumerate(related_items):
 	output += 'More information for ' + queries[i] + ' can be found by researching:\n'
 	output += '--------------------\n'
 	for element in response['itemListElement']:
-	  output +=  (element['result']['name']).encode('utf-8') + ' (' + str(element['resultScore']) + ')\n'
-
+		output +=  (element['result']['name']).encode('utf-8') + ' (' + str(element['resultScore']) + ')\n'
+		try: extra_seeds.append((element['result']['detailedDescription']['url']))
+		except: print element['result'].keys()
+		
 	output += '\n'
 
 with open('text_files/suggested_topics.txt', 'w') as f:
 	f.write(output)
 
+
+with open('text_files/additional_links.txt', 'w') as f:
+	for seed in extra_seeds:
+		f.write(seed)
+		f.write('\n')
+		

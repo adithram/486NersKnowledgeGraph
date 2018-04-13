@@ -128,19 +128,19 @@ crf = CRF(algorithm='lbfgs',
 
 print ("Model Built.")
 
-Make prediction on data with 5-folds cross validation
-predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
-print ("5 Folds Cross Validation Complete")
+# # Make prediction on data with 5-folds cross validation
+# predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
+# print ("5 Folds Cross Validation Complete")
 
-# 5-folds cross validation report
-cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
-print(cv_report)
+# # 5-folds cross validation report
+# cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
+# print(cv_report)
 
 crf.fit(features_vec, labels)
 print ("Data has been fit to features")
 
-Look at the weights
-eli5.show_weights(crf, top=30)
+# # Look at the weights
+# eli5.show_weights(crf, top=30)
 
 
 
@@ -190,6 +190,30 @@ with open('text_files/tagged_named_entities.txt', 'w') as f:
     for entity in tagged_named_entities:
         f.write(entity[0] + ': ' + entity[1]  +'\n')
 
+
+
+####################################################################################
+# Group sequential named entitites together
+last_index = 0
+combined_named_entities = []
+for i, sentence in enumerate(tagged_sentences):
+    for j, word in enumerate(sentence):
+        combined_indices = [j]
+        if preds[i][j] != 'O':
+            c = j
+            while preds[i][c+1] != 'O':
+                c+= 1
+                combined_indices.append(c)
+                # last_index = c
+
+            w = ''
+            for num in combined_indices:
+                w += sentence[num][0] + ' '
+            combined_named_entities.append(w)
+
+with open('text_files/combined_named_entities.txt', 'w') as f:
+    for entity in combined_named_entities:
+        f.write(entity +'\n')
 
 
 
