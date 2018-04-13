@@ -131,12 +131,12 @@ crf = CRF(algorithm='lbfgs',
 print ("Model Built.")
 
 # Make prediction on data with 5-folds cross validation
-predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
-print ("5 Folds Cross Validation Complete")
+# predictions = cross_val_predict(estimator=crf, X=features_vec, y=labels, cv=5)
+# print ("5 Folds Cross Validation Complete")
 
-# 5-folds cross validation report
-cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
-print(cv_report)
+# # 5-folds cross validation report
+# cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
+# print(cv_report)
 
 crf.fit(features_vec, labels)
 print ("Data has been fit to features")
@@ -151,7 +151,7 @@ print ("Data has been fit to features")
 
 # Read raw text
 unprocessed_text = ''
-with open("rawtext.txt", "r") as raw:
+with open("text_files/rawtext.txt", "r") as raw:
     unprocessed_text = raw.read()
 
 # split raw text into list of sentences
@@ -166,11 +166,33 @@ for sentence in raw_sentences:
     tagged = nltk.pos_tag(text)
     tagged_sentences.append(tagged)
 
+# print (tagged_sentences)
+
 raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
 preds = crf.predict(raw_text_features)
 
+# print (preds)
 
 
+# outputting
+named_entities = []
+tagged_named_entities = []
+for i, sentence in enumerate(tagged_sentences):
+    for j, word in enumerate(sentence):
+        # if the word in the sentence is a named entity:
+        if preds[i][j] != 'O':
+            print(word[0])
+            named_entities.append(word[0])
+            tmp = (word[0], preds[i][j])
+            tagged_named_entities.append(tmp)
+
+with open('text_files/named_entities.txt', 'w') as f:
+    for entity in named_entities:
+        f.write(entity +'\n')
+
+with open('text_files/tagged_named_entities.txt', 'w') as f:
+    for entity in tagged_named_entities:
+        f.write(entity[0] + ': ' + entity[1]  +'\n')
 
 
 
