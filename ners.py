@@ -197,19 +197,22 @@ with open('text_files/tagged_named_entities.txt', 'w') as f:
 last_index = 0
 combined_named_entities = []
 for i, sentence in enumerate(tagged_sentences):
-    for j, word in enumerate(sentence):
+    j = 0 
+    while j < len(sentence):
+    # for j, word in enumerate(sentence):
         combined_indices = [j]
         if preds[i][j] != 'O':
-            c = j
-            while preds[i][c+1] != 'O':
-                c+= 1
-                combined_indices.append(c)
+            
+            while preds[i][j+1] != 'O':
+                j+= 1
+                combined_indices.append(j)
                 # last_index = c
 
             w = ''
             for num in combined_indices:
                 w += sentence[num][0] + ' '
             combined_named_entities.append(w)
+        j+=1
 
 with open('text_files/combined_named_entities.txt', 'w') as f:
     for entity in combined_named_entities:
