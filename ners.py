@@ -123,7 +123,7 @@ labels = [convertToLabels(sentence) for sentence in all_sentences]
 # instantiate CRF object
 # L1 regularization parameter increased to improve focus on context
 crf = CRF(algorithm='lbfgs',
-          c1=10,
+          c1=100,
           c2=0.1,
           max_iterations=100,
           all_possible_transitions=False)
@@ -166,12 +166,10 @@ for sentence in raw_sentences:
     tagged = nltk.pos_tag(text)
     tagged_sentences.append(tagged)
 
-# print (tagged_sentences)
 
 raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
 preds = crf.predict(raw_text_features)
 
-# print (preds)
 
 
 # outputting

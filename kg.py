@@ -23,7 +23,7 @@ related_items = []
 for query in queries:
 	params = {
 	    'query': query,
-	    'limit': 10,
+	    'limit': 5,
 	    'indent': True,
 	    'key': api_key,
 	}

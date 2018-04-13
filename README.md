@@ -27,3 +27,14 @@
 - nltk
 - json
 - urllib
+
+### Running Files
+1) ners.py generates two text files of named entities
+	- File must be run using Python3
+	- Currently uses text_files/raw_text.txt as source for raw text
+	- Outputs to text_files/named_entities.txt and text_files/tagged_named_entities.txt 
+
+2) kg.py queries the knowledge graph to find relationally relevant topics based on a seed list of missed topics
+	- File must be run using Python2
+	- Currently uses text_files/missed.txt as seed list
+	- Outputs to text_files/suggested_topics.txt 
