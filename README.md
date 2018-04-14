@@ -38,3 +38,5 @@
 	- File must be run using Python2
 	- Currently uses text_files/missed.txt as seed list
 	- Outputs to text_files/suggested_topics.txt 
+	- Requires an api key from Google for the Knowledge Graph API
+	- Store API Key in local file called '.apikey' in main directory. This file is included in gitignore
