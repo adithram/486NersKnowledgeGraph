@@ -136,6 +136,7 @@ print ("Model Built.")
 # cv_report = flat_classification_report(y_pred=predictions, y_true=labels)
 # print(cv_report)
 
+# train model
 crf.fit(features_vec, labels)
 print ("Data has been fit to features")
 
@@ -164,11 +165,13 @@ for sentence in raw_sentences:
     tagged = nltk.pos_tag(text)
     tagged_sentences.append(tagged)
 
-
+# Convert tagged raw text to features
 raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
+# Make predictions using feature vectors
 preds = crf.predict(raw_text_features)
 
-
+####################################################################################
+# Sequential named entitites are not grouped
 
 # outputting
 named_entities = []

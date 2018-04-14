@@ -13,13 +13,13 @@ with open('text_files/missed.txt', 'r') as f:
 # strip new line characters
 queries = [x.strip() for x in queries] 
 
-
+# API Info
 api_key = open('.apikey').read()
 service_url = 'https://kgsearch.googleapis.com/v1/entities:search'
 
 related_items = []
 
-
+# Collect knowledge graph responses for topics
 for query in queries:
 	params = {
 	    'query': query,
@@ -31,7 +31,7 @@ for query in queries:
 	response = json.loads(urllib.urlopen(url).read())
 	related_items.append(response)
 
-
+# Output related topics to file
 output = ''
 extra_seeds = []
 for i, response in enumerate(related_items):
@@ -52,4 +52,3 @@ with open('text_files/additional_links.txt', 'w') as f:
 	for seed in extra_seeds:
 		f.write(seed)
 		f.write('\n')
-		
