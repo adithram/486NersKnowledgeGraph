@@ -40,7 +40,7 @@ for i, response in enumerate(related_items):
 	for element in response['itemListElement']:
 		output +=  (element['result']['name']).encode('utf-8') + ' (' + str(element['resultScore']) + ')\n'
 		try: extra_seeds.append((element['result']['detailedDescription']['url']))
-		except: print element['result'].keys()
+		except: pass
 		
 	output += '\n'
 
