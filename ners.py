@@ -144,6 +144,57 @@ print ("Data has been fit to features")
 # eli5.show_weights(crf, top=30)
 
 
+############################################################################################################
+# Function Call Format
+def createNamedEntities(raw_text_location):
+    unprocessed_text = ''
+    with open(raw_text_location, "r") as raw:
+        unprocessed_text = raw.read()
+
+    # split raw text into list of sentences
+    raw_sentences = []
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    raw_sentences = tokenizer.tokenize(unprocessed_text)
+
+    # list of tagged sentences
+    tagged_sentences = []
+    for sentence in raw_sentences:
+        text = nltk.word_tokenize(sentence)
+        tagged = nltk.pos_tag(text)
+        tagged_sentences.append(tagged)
+
+    # Convert tagged raw text to features
+    raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
+    # Make predictions using feature vectors
+    preds = crf.predict(raw_text_features)
+
+    ####################################################################################
+    # Group sequential named entitites together
+    last_index = 0
+    combined_named_entities = []
+    for i, sentence in enumerate(tagged_sentences):
+        j = 0 
+        while j < len(sentence):
+        # for j, word in enumerate(sentence):
+            combined_indices = [j]
+            if preds[i][j] != 'O':
+                
+                while preds[i][j+1] != 'O':
+                    j+= 1
+                    combined_indices.append(j)
+                    # last_index = c
+
+                w = ''
+                for num in combined_indices:
+                    w += sentence[num][0] + ' '
+                combined_named_entities.append(w)
+            j+=1
+
+    with open('text_files/combined_named_entities.txt', 'w') as f:
+        for entity in combined_named_entities:
+            f.write(entity +'\n')
+
+
 
 ############################################################################################################
 # Predicting Named Entities from raw text
