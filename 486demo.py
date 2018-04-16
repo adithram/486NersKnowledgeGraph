@@ -1,8 +1,8 @@
+from __future__ import print_function
+
 from scoring.application import demo486
 from kg import get_kg_topics
 import time 
-
-from __future__ import print_function
 
 
 def score(answer, top_words, point_values, named_entities):
@@ -43,5 +43,8 @@ def main():
 	get_kg_topics(missed_topics)
 
 	print("Thank you for demoing!")
+
+if __name__ == '__main__':
+	main()
 
 
