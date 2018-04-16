@@ -31,9 +31,11 @@ def get_kg_topics(queries):
 	# Output related topics to file
 	output = ''
 	extra_seeds = []
+
 	for i, response in enumerate(related_items):
 		output += 'More information for ' + queries[i] + ' can be found by researching:\n'
 		output += '--------------------\n'
+		
 		for element in response['itemListElement']:
 			output +=  (element['result']['name']).encode('utf-8') + ' (' + str(element['resultScore']) + ')\n'
 			try: extra_seeds.append((element['result']['detailedDescription']['url']))

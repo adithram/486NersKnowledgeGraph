@@ -23,7 +23,7 @@ application = Flask(__name__)
 application.debug = True
 
 stopwords = Stopwords()
-# inverted = Inverted()
+inverted = Inverted()
 lemmatizer = WordNetLemmatizer()
 print("Ready from all three systems.")
 
@@ -48,7 +48,7 @@ def tokenize_ne(named_entities):
     tokenized_ne = dict()
     for ne in named_entities:
         for ne_token in ne.split():
-            tokenized_ne[ne_token] = ne
+            tokenized_ne[ne_token.lower()] = ne
 
     return tokenized_ne
 
@@ -79,11 +79,12 @@ def get_word_ranking(text_final, document_term_frequencies, num_docs, named_enti
                 tf += document_term_frequencies[document_number].get(word)
 
         ne_multiplier = 1.0
+        new_word = word
         if word in named_entities_tokenized:
-            word = named_entities_tokenized[word]
+            new_word = named_entities_tokenized[word]
             ne_multiplier = 2.0
 
-        word_ranking.append((word, float(tf * idf * ne_multiplier) / float(norm_factor)))
+        word_ranking.append((new_word, float(tf * idf * ne_multiplier) / float(norm_factor)))
 
     return word_ranking
 
@@ -99,7 +100,7 @@ def process_text(full_documents):
         text_raw = ""
         is_link = False
         h1_words = ""
-        
+
         # it is a link
         if d.find(' ') == -1:
             r = requests.get(d).text
@@ -177,7 +178,7 @@ def process_text(full_documents):
             if not is_proper:
                 # TODO: s3
                 word = lemmatizer.lemmatize(word)
-                print(word)
+                # print(word)
 
             # add to a text_final document
             
@@ -211,7 +212,9 @@ def assign_point_values(sorted_words, num_keywords):
     i = 0
     total_sum = 0
     while i < num_keywords:
-        if sorted_words[i][0] in top_words: continue
+        if sorted_words[i][0] in top_words: 
+            i += 1
+            continue
         top_words.append(sorted_words[i][0])
         total_sum += sorted_words[i][1]
         i += 1

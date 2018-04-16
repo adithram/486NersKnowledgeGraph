@@ -8,19 +8,19 @@ import time
 def score(answer, top_words, point_values, named_entities):
 	score = 0.0
 	missed_topics = []
-	for idx, pts in enumerate(point_values):
-		if top_words[idx].lower() in answer.lower():
-			score += pts
+
+	for idx, word in enumerate(top_words):
+		if word.lower() in answer.lower():
+			score += point_values[idx]
 		else:
 			missed_topics.append(top_words[idx])
 
-
-	return score
+	return score, missed_topics
 
 
 def main():
-	question_text = "A" #raw_input("Welcome, please type your question\n")
-	source_doc = "rawtext.txt" #raw_input("Please give the filepath to the source document\n")
+	question_text = raw_input("Welcome, please type your question\n")
+	source_doc = raw_input("Please give the filepath to the source document\n")
 	document = None
 	with open(source_doc) as f:
 		document = f.readlines()
