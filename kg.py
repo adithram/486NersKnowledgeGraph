@@ -7,7 +7,7 @@ import urllib
 
 # strip new line characters
 
-def get_kg_topics(queries):
+def get_kg_topics(queries, prefix):
 	queries = [x.strip() for x in queries] 
 
 	# API Info
@@ -43,11 +43,11 @@ def get_kg_topics(queries):
 			
 		output += '\n'
 
-	with open('text_files/suggested_topics.txt', 'w') as f:
+	with open('text_files/{}_suggested_topics.txt'.format(prefix), 'w') as f:
 		f.write(output)
 
 
-	with open('text_files/additional_links.txt', 'w') as f:
+	with open('text_files/{}_additional_links.txt'.format(prefix), 'w') as f:
 		for seed in extra_seeds:
 			f.write(seed)
 			f.write('\n')
