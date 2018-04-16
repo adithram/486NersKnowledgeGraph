@@ -7,11 +7,11 @@
 
 import pandas as pd
 import numpy as np
-import sklearn
+# import sklearn
 from sklearn_crfsuite import CRF
-from sklearn.cross_validation import cross_val_predict
-from sklearn_crfsuite.metrics import flat_classification_report
-import eli5
+# from sklearn.cross_validation import cross_val_predict
+# from sklearn_crfsuite.metrics import flat_classification_report
+# import eli5
 import nltk
 import pickle
 
@@ -19,16 +19,16 @@ import pickle
 # Building Model for Named Entity Recognition
 
 # loading dataset
-training_data= pd.read_csv("data/ner_dataset.csv", encoding="latin1")
-training_data = training_data.fillna(method="ffill")
+# training_data= pd.read_csv("data/ner_dataset.csv", encoding="latin1")
+# training_data = training_data.fillna(method="ffill")
 
-# Peek at the data
-training_data.tail(10)
+# # Peek at the data
+# training_data.tail(10)
 
 ############################################################################################################
 # Function Call Format
 def createNamedEntities(raw_text):
-    crf = pickle.load(open('final_crf.sav'), 'rb')
+    crf = pickle.load(open('final_crf.sav', 'rb'))
     unprocessed_text = raw_text
 
     # split raw text into list of sentences
@@ -103,13 +103,13 @@ class RetrieveSentence(object):
             return None
 
 
-retrieval = RetrieveSentence(training_data)
-# sentence = retrieval.get_next()
+# retrieval = RetrieveSentence(training_data)
+# # sentence = retrieval.get_next()
 
-# sentence contrains a list of tuples, each tuple is the word, pos, and tag
+# # sentence contrains a list of tuples, each tuple is the word, pos, and tag
 
-# retrieve all of the sentences as tuple
-all_sentences = retrieval.all_sentences
+# # retrieve all of the sentences as tuple
+# all_sentences = retrieval.all_sentences
 
 
 # Feature Engineering
@@ -193,7 +193,7 @@ def main():
 
     # train model
     crf.fit(features_vec, labels)
-    pickle.dump(crf, open('final_crf.sav', 'wb'))
+    pickle.dump(crf, open('final_crf.sav', 'wb'), protocol=2)
 
     print ("Data has been fit to features")
 

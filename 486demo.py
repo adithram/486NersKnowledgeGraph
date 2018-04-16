@@ -19,12 +19,13 @@ def score(answer, top_words, point_values, named_entities):
 
 
 def main():
-	question_text = raw_input("Welcome, please type your question")
-	source_doc = raw_input("Please give the filepath to the source document")
+	question_text = "A" #raw_input("Welcome, please type your question\n")
+	source_doc = "rawtext.txt" #raw_input("Please give the filepath to the source document\n")
 	document = None
 	with open(source_doc) as f:
-		document = source_doc.read()
+		document = f.readlines()
 
+	document = [x.strip() for x in document]
 	top_words, point_values, named_entities = demo486(document, 5)
 
 	print('These are the top_words and point_values retrieved from the document {}'.format(
@@ -37,7 +38,7 @@ def main():
 	# time.sleep(2)
 
 	print(question_text)
-	answer = raw_input("Please type in your answer now")
+	answer = raw_input("Please type in your answer now\n")
 
 	points, missed_topics = score(answer, top_words, point_values, named_entities)
 	get_kg_topics(missed_topics)
@@ -45,6 +46,7 @@ def main():
 	print("Thank you for demoing!")
 
 if __name__ == '__main__':
-	main()
+	while True:
+		main()
 
 

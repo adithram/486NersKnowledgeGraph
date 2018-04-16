@@ -23,7 +23,7 @@ application = Flask(__name__)
 application.debug = True
 
 stopwords = Stopwords()
-inverted = Inverted()
+# inverted = Inverted()
 lemmatizer = WordNetLemmatizer()
 print("Ready from all three systems.")
 
@@ -99,6 +99,7 @@ def process_text(full_documents):
         text_raw = ""
         is_link = False
         h1_words = ""
+        
         # it is a link
         if d.find(' ') == -1:
             r = requests.get(d).text
@@ -227,9 +228,9 @@ def assign_point_values(sorted_words, num_keywords):
 
 
 def demo486(documents, num_keywords):
-    num_docs = len(full_documents)
+    num_docs = len(documents)
 
-    text_raw, text_final, document_term_frequencies = process_text(full_documents)
+    text_raw, text_final, document_term_frequencies = process_text(documents)
     named_entities = createNamedEntities(text_raw)
 
     # Return highest N tf-idf scores for the entire document
