@@ -13,6 +13,7 @@ from sklearn.cross_validation import cross_val_predict
 from sklearn_crfsuite.metrics import flat_classification_report
 import eli5
 import nltk
+import pickle
 
 ############################################################################################################
 # Building Model for Named Entity Recognition
