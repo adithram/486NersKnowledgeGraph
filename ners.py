@@ -146,10 +146,8 @@ print ("Data has been fit to features")
 
 ############################################################################################################
 # Function Call Format
-def createNamedEntities(raw_text_location):
-    unprocessed_text = ''
-    with open(raw_text_location, "r") as raw:
-        unprocessed_text = raw.read()
+def createNamedEntities(raw_text):
+    unprocessed_text = raw_text
 
     # split raw text into list of sentences
     raw_sentences = []
@@ -190,87 +188,89 @@ def createNamedEntities(raw_text_location):
                 combined_named_entities.append(w)
             j+=1
 
+    return list(set(combined_named_entities))
+    
     with open('text_files/combined_named_entities.txt', 'w') as f:
         for entity in combined_named_entities:
             f.write(entity +'\n')
 
 
+if __name__ == '__main__':
+    ############################################################################################################
+    # Predicting Named Entities from raw text
+    
+    # Read raw text
+    unprocessed_text = ''
+    with open("text_files/rawtext.txt", "r") as raw:
+        unprocessed_text = raw.read()
 
-############################################################################################################
-# Predicting Named Entities from raw text
+    # split raw text into list of sentences
+    raw_sentences = []
+    tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
+    raw_sentences = tokenizer.tokenize(unprocessed_text)
 
-# Read raw text
-unprocessed_text = ''
-with open("text_files/rawtext.txt", "r") as raw:
-    unprocessed_text = raw.read()
+    # list of tagged sentences
+    tagged_sentences = []
+    for sentence in raw_sentences:
+        text = nltk.word_tokenize(sentence)
+        tagged = nltk.pos_tag(text)
+        tagged_sentences.append(tagged)
 
-# split raw text into list of sentences
-raw_sentences = []
-tokenizer = nltk.data.load('tokenizers/punkt/english.pickle')
-raw_sentences = tokenizer.tokenize(unprocessed_text)
+    # Convert tagged raw text to features
+    raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
+    # Make predictions using feature vectors
+    preds = crf.predict(raw_text_features)
 
-# list of tagged sentences
-tagged_sentences = []
-for sentence in raw_sentences:
-    text = nltk.word_tokenize(sentence)
-    tagged = nltk.pos_tag(text)
-    tagged_sentences.append(tagged)
+    ####################################################################################
+    # Sequential named entitites are not grouped
 
-# Convert tagged raw text to features
-raw_text_features = [convertToFeatures(sentence) for sentence in tagged_sentences]
-# Make predictions using feature vectors
-preds = crf.predict(raw_text_features)
+    # outputting
+    named_entities = []
+    tagged_named_entities = []
+    for i, sentence in enumerate(tagged_sentences):
+        for j, word in enumerate(sentence):
+            # if the word in the sentence is a named entity:
+            if preds[i][j] != 'O':
+                print(word[0])
+                named_entities.append(word[0])
+                tmp = (word[0], preds[i][j])
+                tagged_named_entities.append(tmp)
 
-####################################################################################
-# Sequential named entitites are not grouped
+    with open('text_files/named_entities.txt', 'w') as f:
+        for entity in named_entities:
+            f.write(entity +'\n')
 
-# outputting
-named_entities = []
-tagged_named_entities = []
-for i, sentence in enumerate(tagged_sentences):
-    for j, word in enumerate(sentence):
-        # if the word in the sentence is a named entity:
-        if preds[i][j] != 'O':
-            print(word[0])
-            named_entities.append(word[0])
-            tmp = (word[0], preds[i][j])
-            tagged_named_entities.append(tmp)
-
-with open('text_files/named_entities.txt', 'w') as f:
-    for entity in named_entities:
-        f.write(entity +'\n')
-
-with open('text_files/tagged_named_entities.txt', 'w') as f:
-    for entity in tagged_named_entities:
-        f.write(entity[0] + ': ' + entity[1]  +'\n')
+    with open('text_files/tagged_named_entities.txt', 'w') as f:
+        for entity in tagged_named_entities:
+            f.write(entity[0] + ': ' + entity[1]  +'\n')
 
 
 
-####################################################################################
-# Group sequential named entitites together
-last_index = 0
-combined_named_entities = []
-for i, sentence in enumerate(tagged_sentences):
-    j = 0 
-    while j < len(sentence):
-    # for j, word in enumerate(sentence):
-        combined_indices = [j]
-        if preds[i][j] != 'O':
-            
-            while preds[i][j+1] != 'O':
-                j+= 1
-                combined_indices.append(j)
-                # last_index = c
+    ####################################################################################
+    # Group sequential named entitites together
+    last_index = 0
+    combined_named_entities = []
+    for i, sentence in enumerate(tagged_sentences):
+        j = 0 
+        while j < len(sentence):
+        # for j, word in enumerate(sentence):
+            combined_indices = [j]
+            if preds[i][j] != 'O':
+                
+                while preds[i][j+1] != 'O':
+                    j+= 1
+                    combined_indices.append(j)
+                    # last_index = c
 
-            w = ''
-            for num in combined_indices:
-                w += sentence[num][0] + ' '
-            combined_named_entities.append(w)
-        j+=1
+                w = ''
+                for num in combined_indices:
+                    w += sentence[num][0] + ' '
+                combined_named_entities.append(w)
+            j+=1
 
-with open('text_files/combined_named_entities.txt', 'w') as f:
-    for entity in combined_named_entities:
-        f.write(entity +'\n')
+    with open('text_files/combined_named_entities.txt', 'w') as f:
+        for entity in combined_named_entities:
+            f.write(entity +'\n')
 
 
 
