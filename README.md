@@ -40,3 +40,22 @@
 	- Outputs to text_files/suggested_topics.txt 
 	- Requires an api key from Google for the Knowledge Graph API
 	- Store API Key in local file called '.apikey' in main directory. This file is included in gitignore
+	
+Inside of `scoring/`, you will find a few files related to how we score. We use an inverted index, created and uploaded to Amazon S3 (see `inverted.py`) and a stop words class (located in `stopwords.py`). Our main function in `scoring/application.py` can be found on Line 233, `demo486.py`, where we walk through what each function in the file does.
+
+To run a demo, you can run `486demo.py` in the root directory. A sample use case follows:
+
+```
+> Welcome, please type your question.
+Who was George Washington
+> Please give the name of the source document
+gw # Note, gw is the file with the source document, see gw.txt
+> How many key topics would you like extracted?
+5
+... Output from the program ...
+> Now, the demo will switch to student mode...
+> Who was George Washington
+> Please type in your answer now
+George Washington was a general in the Revolutionary War who fought against the British.
+
+```
