@@ -38,7 +38,7 @@ num_CORPUS_DOCUMENTS = 5000
 # Input: Nothing
 # Output: Nothing
 # POST Request:
-# Input = JSON Formatted with two inputs - 
+# Input = JSON Formatted with two inputs -
 # 1. 'documents' (list) - list of inputs, either text or links
 # 2. 'num_keywords' (integer) - number of keywords user wants returned
 # Output = JSON Formatted response with 2 lists ('words', 'point_values'), 'total_points' (int) , and 'error_message' (string)
@@ -60,10 +60,10 @@ def get_word_ranking(text_final, document_term_frequencies, num_docs, named_enti
     for word in set(text_final):
         word_stats = inverted.wordDict.get(word)
 
-        if word_stats == None: 
-            # IDF = log(Total Documents in Corpus / 1 + 1) 
+        if word_stats == None:
+            # IDF = log(Total Documents in Corpus / 1 + 1)
             idf = log(num_CORPUS_DOCUMENTS / 2)
-    
+
         else:
             idf = word_stats['idf']
 
@@ -123,7 +123,7 @@ def process_text(full_documents):
         # body of text
         else:
             text_raw = d
-        
+
         # clean, format the body of text
         text_raw = text_raw.replace('-', ' ')
         text_raw = text_raw.replace('\n', '  ')
@@ -145,13 +145,13 @@ def process_text(full_documents):
         # tokenize the text
         words = text_raw.split()
         text_raw_list.append(text_raw)
-        
+
         # remove special characters and stop words
         for idx, word in enumerate(words):
             word = str(words[idx])
             is_proper = False
 
-            # boost if it is a proper 
+            # boost if it is a proper
             if word[0].isupper():
                 is_proper = True
 
@@ -181,13 +181,13 @@ def process_text(full_documents):
                 # print(word)
 
             # add to a text_final document
-            
+
             # Weight bodies of text heavier (x1.5 currently)
             if is_link:
                 weighted_frequency = 1.0
                 if word in h1_word_list:
                     weighted_frequency = 4.0
-                
+
             else:
                 weighted_frequency = 1.5
 
@@ -212,7 +212,7 @@ def assign_point_values(sorted_words, num_keywords):
     i = 0
     total_sum = 0
     while i < num_keywords:
-        if sorted_words[i][0] in top_words: 
+        if sorted_words[i][0] in top_words:
             i += 1
             continue
         top_words.append(sorted_words[i][0])
@@ -233,30 +233,29 @@ def assign_point_values(sorted_words, num_keywords):
 def demo486(documents, num_keywords):
     num_docs = len(documents)
 
+    # process the documents that come in, get the term frequencies
     text_raw, text_final, document_term_frequencies = process_text(documents)
+    # extract the named entities, using the trained model from ners.py
     named_entities = createNamedEntities(text_raw)
 
     # Return highest N tf-idf scores for the entire document
     word_ranking = get_word_ranking(text_final, document_term_frequencies, num_docs, named_entities)
 
+    # sort the words in descending (high to low) order based on points
     sorted_words = sorted(word_ranking, key=itemgetter(1), reverse=True)
 
-    top_words, point_values, total_adjusted_point_values = assign_point_values(sorted_words, num_keywords)
-
-    sorted_words = sorted(word_ranking, key=itemgetter(1), reverse=True)
-
+    # normalize the point values to sum up to 100
     top_words, point_values, total_adjusted_point_values = assign_point_values(sorted_words, num_keywords)
 
     return top_words, point_values, named_entities
 
 
- 
 @application.route('/', methods=['GET', 'POST'])
 @application.route('/index', methods=['GET', 'POST'])
 def index():
     if request.method == 'GET':
         return json.dumps({
-            'error_message' : 'You have reached this page in error.' 
+            'error_message' : 'You have reached this page in error.'
             })
     else:
         pass # Readability, POST request
