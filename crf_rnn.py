@@ -31,6 +31,7 @@ import matplotlib.pyplot as plt
 
 
 # Read the data
+# https://www.kaggle.com/abhinavwalia95/entity-annotated-corpus
 training_data = pd.read_csv("data/ner_dataset.csv", encoding="latin1")
 training_data = training_data.fillna(method="ffill")
 
@@ -41,16 +42,6 @@ n_words = len(words); n_words
 
 tags = list(set(training_data["Tag"].values))
 n_tags = len(tags); n_tags
-
-
-def convertToFeatures(sentence):
-    return [wordToFeature(sentence, i) for i in range(len(sentence))]
-
-def convertToLabels(sentence):
-    return [label for token, postag, label in sentence]
-
-def convertToTokens(sentence):
-    return [token for token, postag, label in sentence]
 
 # Feature Engineering
 # Feature Engineering Strategy defined by Tobias Sterbak (https://www.depends-on-the-definition.com/about/)
@@ -95,10 +86,20 @@ def wordToFeature(sentence, i):
     else:
         features['EOS'] = True
 
+# Helper functions used to pull data from training set and convert to desired format
+def convertToFeatures(sentence):
+    return [wordToFeature(sentence, i) for i in range(len(sentence))]
+
+def convertToLabels(sentence):
+    return [label for token, postag, label in sentence]
+
+def convertToTokens(sentence):
+    return [token for token, postag, label in sentence]
+
 
 # Instantiate previously used sentence retrieval class
 # class for retrieving a sentence
-# will create a tuple of word, pos, and tag
+# will create a tuple of word, pos (part of speech), and tag (NER tag)
 class RetrieveSentence(object):
     
     def __init__(self, data):
@@ -122,12 +123,11 @@ class RetrieveSentence(object):
 
 
 # Retrieve sentence
+# create retrieval object
 retrieval = RetrieveSentence(training_data)
-# sentence = retrieval.get_next()
-
 # sentence contrains a list of tuples, each tuple is the word, pos, and tag
 
-# retrieve all of the sentences as tuple
+# retrieve all of the sentences as tuples
 all_sentences = retrieval.all_sentences
 
 # Token preparization 
@@ -136,6 +136,7 @@ all_sentences = retrieval.all_sentences
 max_len = 75
 max_len_char = 10
 
+# ALl for padding purposes
 word2idx = {w: i + 2 for i, w in enumerate(words)}
 word2idx["UNK"] = 1
 word2idx["PAD"] = 0
@@ -148,7 +149,10 @@ idx2tag = {i: w for w, i in tag2idx.items()}
 # Note that we increased the index of the words by one to use zero as a padding value. 
 # This is done because we want to use the mask_zero parameter of the embedding layer to ignore inputs with value zero.
 
+# convert words to numeric values from training data with padding
 X_word = [[word2idx[w[0]] for w in s] for s in all_sentences]
+
+# pad_sequences function from keras
 X_word = pad_sequences(maxlen=max_len, sequences=X_word, value=word2idx["PAD"], padding='post', truncating='post')
 
 chars = set([w_i for w in words for w_i in w])
@@ -158,6 +162,7 @@ char2idx = {c: i + 2 for i, c in enumerate(chars)}
 char2idx["UNK"] = 1
 char2idx["PAD"] = 0
 
+# convert chars in training data to numeric values with padding
 X_char = []
 for sentence in all_sentences:
     sent_seq = []
@@ -172,9 +177,10 @@ for sentence in all_sentences:
     X_char.append(np.array(sent_seq))
 
 
-# Mapping and tagging
+# Match training data labels to chars
 y = [[tag2idx[w[2]] for w in s] for s in all_sentences]
 
+# Training data labels with matching padding
 y = pad_sequences(maxlen=max_len, sequences=y, value=tag2idx["PAD"], padding='post', truncating='post')
 
 # Split the data
@@ -182,7 +188,7 @@ X_word_tr, X_word_te, y_tr, y_te = train_test_split(X_word, y, test_size=0.1, ra
 X_char_tr, X_char_te, _, _ = train_test_split(X_char, y, test_size=0.1, random_state=2018)
 
 
-# RNN LAYERS
+# RNN/LSTM LAYERS - Check Keras Documentation as needed
 # #########################################################################################################################
 
 # input and embedding for words
@@ -205,6 +211,7 @@ main_lstm = Bidirectional(LSTM(units=50, return_sequences=True,
                                recurrent_dropout=0.6))(x)
 out = TimeDistributed(Dense(n_tags + 1, activation="sigmoid"))(main_lstm)
 
+# Final model
 model = Model([word_in, char_in], out)
 # #########################################################################################################################
 
