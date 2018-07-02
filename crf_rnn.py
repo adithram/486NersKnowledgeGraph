@@ -287,7 +287,7 @@ for sentence in tagged_sentences:
     raw_chars.append(np.array(sent_seq))
 
 # Word vector for input data
-raw_words = [[word2idx[w[0]] for w in s] for s in all_sentences]
+raw_words = [[word2idx[w[0]] for w in s] for s in tagged_sentences]
 raw_words = pad_sequences(maxlen=max_len, sequences=raw_words, value=word2idx["PAD"], padding='post', truncating='post')
 
 preds = model.predict([raw_words, np.array(raw_chars).reshape((len(raw_chars), max_len, max_len_char))])
